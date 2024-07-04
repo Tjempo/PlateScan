@@ -12,6 +12,7 @@ int main(int argc, char const *argv[])
     cv::Mat img = cv::imread(path);
     cv::imshow("Image",img);
     cv::waitKey(0);
+
     return 0;
 }
 
