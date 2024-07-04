@@ -32,3 +32,5 @@
 *.app
 Notes.txt
 .vscode/c_cpp_properties.json
+src/test/ProcessEdge/test
+src/test/ProcessGrayscale/test
