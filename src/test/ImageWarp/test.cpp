@@ -3,8 +3,11 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-
 #include <iostream>
+
+//Function Declarations
+void drawLines(cv::Mat img, std::vector<cv::Point2f> points);
+
 
 const double OUTPUT_WIDTH = 240, OUTPUT_HEIGHT = 320;
 
@@ -38,15 +41,14 @@ int main(int argc, char const *argv[]){
     //Draw the points on the original image
     for(unsigned int i = 0; i < originalPointsKD.size(); i++){
         cv::circle(img,originalPointsKD[i],10,cv::Scalar(105,27,194),cv::FILLED);
-    }
-
-    for(unsigned int i = 0; i < originalPointsC7.size(); i++){
         cv::circle(img,originalPointsC7[i],10,cv::Scalar(105,27,194),cv::FILLED);
-    }
-
-    for(unsigned int i = 0; i < originalPointsAOS.size(); i++){
         cv::circle(img,originalPointsAOS[i],10,cv::Scalar(105,27,194),cv::FILLED);
     }
+
+    //Draw lines between the points
+    drawLines(img, originalPointsKD);
+    drawLines(img, originalPointsC7);
+    drawLines(img, originalPointsAOS);
 
     //Show image scaled to 1280 x 720
     cv::resize(img,img,cv::Size(1280,720));
@@ -57,4 +59,12 @@ int main(int argc, char const *argv[]){
 
     cv::waitKey(0);
     return 0;
+}
+
+
+void drawLines(cv::Mat img, std::vector<cv::Point2f> points){
+    cv::line(img, points[0], points[1], cv::Scalar(0,0,255),2);
+    cv::line(img, points[0], points[2], cv::Scalar(0,0,255),2);
+    cv::line(img, points[1], points[3], cv::Scalar(0,0,255),2);
+    cv::line(img, points[3], points[2], cv::Scalar(0,0,255),2);
 }
