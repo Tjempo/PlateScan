@@ -20,13 +20,6 @@ int main(int argc, char const *argv[]) {
     // std::string path = "shapes_dig.jpg";  // Original size: 962 × 864
 
     cv::Mat img = cv::imread(path), gray, blur, canny, dilated;
-
-    /* For webcam:
-    cv::Mat img, gray, blur, canny, dilated;
-    cv::VideoCapture cap(0);
-    cap.read(img);
-    */
-
     if (img.empty()) {
         std::cerr << "Could not open or find the image!" << std::endl;
         return -1;
@@ -47,10 +40,6 @@ int main(int argc, char const *argv[]) {
 
     // Display images:
     cv::imshow("Original", img);  // Show normal image
-    // cv::imshow("Gray", gray); // Show gray image
-    // cv::imshow("Blur", blur); // Show blurred image
-    // cv::imshow("Canny", canny); // Show canny image
-    // cv::imshow("Dilate", dilated);  // Show dilated image
     cv::waitKey(0);
 
     return 0;
@@ -72,49 +61,46 @@ void getContours(cv::Mat imgDil, cv::Mat img) {
 
         if(area > 1000){
             float perimeter = cv::arcLength(contours[i], true);
-            cv::approxPolyDP(contours[i], contoursPoly[i], 0.02 * perimeter, true);
+            cv::approxPolyDP(contours[i], contoursPoly[i], 0.016 * perimeter, true);
             // Documentation for drawContours: https://docs.opencv.org/4.x/d6/d6e/group__imgproc__draw.html#ga746c0625f1781f1ffc90
             // cv::drawContours(img, contours, i, cv::Scalar(255, 0, 255), 2);
             cv::drawContours(img, contoursPoly, i, cv::Scalar(255, 0, 255), 2);  // Draw contours on the image
-
-            std::cout << contoursPoly[i].size() << std::endl;
-
-            // boundRect[i] = cv::boundingRect(contoursPoly[i]);
+            boundRect[i] = cv::boundingRect(contoursPoly[i]);
             // cv::rectangle(img, boundRect[i].tl(), boundRect[i].br(), cv::Scalar(0, 255, 0), 2);
 
             unsigned short vertices = (unsigned short)contoursPoly[i].size();
-            switch (vertices){ //This is a lazy switch case. Its better to use a function to determine the shape.
-            case 2:
-                cv::putText(img, "Line", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                break;
-            case 3:
-                cv::putText(img, "Triangle", (contours[i][0]), cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                break;
+            float aspectRatio = (float)boundRect[i].width / (float)boundRect[i].height;
+            switch (vertices) {  // This is a lazy switch case. Its better to use a function to determine the shape.
+                case 2:
+                    cv::putText(img, "Line", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    break;
+                case 3:
+                    cv::putText(img, "Triangle", (contours[i][0]), cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    break;
 
-            case 4:
-                cv::putText(img, "Rectangle", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                break;
-            
-            case 5:
-                cv::putText(img, "Pentagon", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                break;
-            
-            case 6:
-                cv::putText(img, "Half circle", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                break;
+                case 4:
+                    if (aspectRatio > 0.75 && aspectRatio < 1.3) {
+                        cv::putText(img, "Square", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    } else {
+                        cv::putText(img, "Rectangle", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    }
+                    break;
+                case 5:
+                    cv::putText(img, "Half circle", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    break;
 
-            case 7:
-                cv::putText(img, "Heptagon", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                break;
+                case 6:
+                    cv::putText(img, "Pentagon", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    break;
 
-            case 8:
-                cv::putText(img, "Circle", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                break;
-            
-            default:
-                break;
+                case 7:
+                    cv::putText(img, "Heptagon", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    break;
+
+                default:
+                    cv::putText(img, "Circle", contours[i][0], cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                    break;
             }
-
         }
     }
 }
