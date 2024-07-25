@@ -1,0 +1,24 @@
+{  
+    "System": {
+        "Name": "PlateScanner",
+        "Version": "V1.0.0"
+    },
+
+    "Camera": {
+        "ID": 0,
+        "DES_Width": 1280,
+        "DES_Height": 720
+    },
+
+    "Database": {
+        "Type": "PostgreSQL",
+        "Host": "192.168.1.1",
+        "Port": 5432,
+        "Name": "PlateScanner"
+    },
+
+    "Credentials": {
+        "Username": "admin",
+        "Password": "admin"
+    }
+}
