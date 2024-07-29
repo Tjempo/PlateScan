@@ -22,6 +22,13 @@ public:
     unsigned short getCameraID() const;
     unsigned short getDesiredWidth() const;
     unsigned short getDesiredHeight() const;
+    unsigned short getHueMin() const;
+    unsigned short getSatMin() const;
+    unsigned short getValMin() const;
+    unsigned short getHueMax() const;
+    unsigned short getSatMax() const;
+    unsigned short getValMax() const;
+
     std::string getDatabaseType() const;
     std::string getDatabaseIP() const;
     std::string getDatabasePort() const;
@@ -41,6 +48,13 @@ private:
     unsigned short desiredWidth;
     unsigned short desiredHeight;
 
+    unsigned short hueMin;
+    unsigned short satMin;
+    unsigned short valMin;
+    unsigned short hueMax;
+    unsigned short satMax;
+    unsigned short valMax;
+    
     //Database Info
     std::string databaseType;
     std::string databaseIP;
@@ -48,8 +62,6 @@ private:
     std::string databaseName;
     std::string databaseUser;
     std::string databasePassword;
-
-
 };
 
 #endif // CONFIGREADER_HPP

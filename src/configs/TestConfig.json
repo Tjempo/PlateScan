@@ -7,7 +7,16 @@
     "Camera": {
         "ID": 0,
         "DES_Width": 1280,
-        "DES_Height": 720
+        "DES_Height": 720,
+
+        "min_hue": 0,
+        "max_hue": 179,
+
+        "min_sat": 0,
+        "max_sat": 126,
+
+        "min_val": 111,
+        "max_val": 255
     },
 
     "Database": {

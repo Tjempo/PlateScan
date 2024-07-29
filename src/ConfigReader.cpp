@@ -16,7 +16,7 @@ void ConfigReader::readConfig(const std::string &configPath) {
 
     // Check if file is JSON:
     if (configPath.substr(configPath.find_last_of(".") + 1) != "json") {
-        throw std::invalid_argument("Config file is not a JSON file!");
+        throw std::invalid_argument("Config file is not a JSON file! Please provide a JSON file.");
     }
 
     // Read the JSON file into the property tree
@@ -31,6 +31,15 @@ void ConfigReader::readConfig(const std::string &configPath) {
     this->cameraID = pt.get<unsigned short>("Camera.ID");
     this->desiredWidth = pt.get<unsigned short>("Camera.DES_Width");
     this->desiredHeight = pt.get<unsigned short>("Camera.DES_Height");
+
+    //Initial slider values:
+    this->hueMin = pt.get<unsigned short>("Camera.min_hue");
+    this->satMin = pt.get<unsigned short>("Camera.min_sat");
+    this->valMin = pt.get<unsigned short>("Camera.min_val");
+
+    this->hueMax = pt.get<unsigned short>("Camera.max_hue");
+    this->satMax = pt.get<unsigned short>("Camera.max_sat");
+    this->valMax = pt.get<unsigned short>("Camera.max_val");
 
     //Database Info
     this->databaseType = pt.get<std::string>("Database.Type");
@@ -64,6 +73,33 @@ unsigned short ConfigReader::getDesiredWidth() const {
 unsigned short ConfigReader::getDesiredHeight() const {
     return this->desiredHeight;
 }
+
+unsigned short ConfigReader::getHueMin() const {
+    return this->hueMin;
+}
+
+unsigned short ConfigReader::getSatMin() const {
+    return this->satMin;
+}
+
+unsigned short ConfigReader::getValMin() const {
+    return this->valMin;
+}
+
+unsigned short ConfigReader::getHueMax() const {
+    return this->hueMax;
+}
+
+unsigned short ConfigReader::getSatMax() const {
+    return this->satMax;
+}
+
+unsigned short ConfigReader::getValMax() const {
+    return this->valMax;
+}
+
+
+//Database Info
 
 
 std::string ConfigReader::getDatabaseType() const {
