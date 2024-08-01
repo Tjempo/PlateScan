@@ -1,3 +1,5 @@
+/* !!! Important: Remove the .template from file name and then remove this line !!! */
+
 {  
     "System": {
         "Name": "PlateScanner",

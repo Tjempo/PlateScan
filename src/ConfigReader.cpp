@@ -28,9 +28,16 @@ void ConfigReader::readConfig(const std::string &configPath) {
     }
     this->name = pt.get<std::string>("System.Name");
     this->version = pt.get<std::string>("System.Version");
-    this->cameraID = pt.get<unsigned short>("Camera.ID");
+
+    //Settings
+    this->showUI = pt.get<bool>("Settings.Show_UI");
+
+    //Camera Info
+    this->cameraID = pt.get<unsigned short>("Camera.Cam_ID");
     this->desiredWidth = pt.get<unsigned short>("Camera.DES_Width");
     this->desiredHeight = pt.get<unsigned short>("Camera.DES_Height");
+    this->FPS = pt.get<unsigned short>("Camera.FPS");
+    this->path = pt.get<std::string>("Camera.media_Path");
 
     //Initial slider values:
     this->hueMin = pt.get<unsigned short>("Camera.min_hue");
@@ -50,6 +57,31 @@ void ConfigReader::readConfig(const std::string &configPath) {
     //Database Credentials
     this->databaseUser = pt.get<std::string>("Credentials.Username");
     this->databasePassword = pt.get<std::string>("Credentials.Password");
+
+    try{
+        std::string mediaType = pt.get<std::string>("Camera.using_media");
+        switch (mediaType[0]){
+            case 'i':
+                Logger::getInstance().log("Media type is image.", LogLevel::INFO);
+                this->media = mediaTypes::IMAGE;
+                break;
+            case 'v':
+                Logger::getInstance().log("Media type is video.", LogLevel::INFO);
+                this->media = mediaTypes::VIDEO;
+                break;
+            case 'c':
+                Logger::getInstance().log("Media type is camera.", LogLevel::INFO);
+                this->media = mediaTypes::CAMERA;
+                break;
+                
+            default:
+                throw std::invalid_argument("Invalid media type in the config file!");
+        }
+    }
+    catch(const std::exception& e){
+        Logger::getInstance().log(e.what(), LogLevel::ERRORLEVEL);
+    }
+    
 }
 
 // --- Getters ---
@@ -62,12 +94,28 @@ std::string ConfigReader::getVersion() const {
     return this->version;
 }
 
+bool ConfigReader::getShowUI() const {
+    return this->showUI;
+}
+
 unsigned short ConfigReader::getCameraID() const {
     return this->cameraID;
 }
 
 unsigned short ConfigReader::getDesiredWidth() const {
     return this->desiredWidth;
+}
+
+unsigned short ConfigReader::getFPS() const {
+    return this->FPS;
+}
+
+mediaTypes ConfigReader::getMedia() const {
+    return this->media;
+}
+
+std::string ConfigReader::getPath() const {
+    return this->path;
 }
 
 unsigned short ConfigReader::getDesiredHeight() const {

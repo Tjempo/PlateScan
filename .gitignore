@@ -36,3 +36,6 @@ src/test/ProcessEdge/test
 src/test/ProcessGrayscale/test
 .vscode/settings.json
 plateScan
+*.jpg
+*.png
+*.mp4

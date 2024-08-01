@@ -1,10 +1,18 @@
 #ifndef CONFIGREADER_HPP
 #define CONFIGREADER_HPP
 
+#include "Logger.hpp"
+
 #include <filesystem>
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+
+enum mediaTypes{
+    IMAGE,
+    VIDEO,
+    CAMERA
+};
 
 class ConfigReader{
 public:
@@ -19,9 +27,13 @@ public:
     // Getters:
     std::string getName() const;
     std::string getVersion() const;
+    bool getShowUI() const;
     unsigned short getCameraID() const;
     unsigned short getDesiredWidth() const;
     unsigned short getDesiredHeight() const;
+    unsigned short getFPS() const;
+    mediaTypes getMedia() const;
+    std::string getPath() const;
     unsigned short getHueMin() const;
     unsigned short getSatMin() const;
     unsigned short getValMin() const;
@@ -42,11 +54,15 @@ private:
     /* Data from the config file */
     std::string name;
     std::string version;
+    bool showUI;
 
     //Camera Info
     unsigned short cameraID;
     unsigned short desiredWidth;
     unsigned short desiredHeight;
+    unsigned short FPS;
+    mediaTypes media;
+    std::string path;
 
     unsigned short hueMin;
     unsigned short satMin;
