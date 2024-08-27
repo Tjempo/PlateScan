@@ -26,63 +26,67 @@ void ConfigReader::readConfig(const std::string &configPath) {
     } catch (const boost::property_tree::json_parser_error &e) {
         throw std::runtime_error("Error reading JSON file: " + std::string(e.what()));
     }
-    this->name = pt.get<std::string>("System.Name");
-    this->version = pt.get<std::string>("System.Version");
 
-    //Settings
-    this->showUI = pt.get<bool>("Settings.Show_UI");
+    // Load fields with proper logging
+    try {
+        this->name = pt.get<std::string>("System.Name");
+        
+        this->version = pt.get<std::string>("System.Version");
 
-    //Camera Info
-    this->cameraID = pt.get<unsigned short>("Camera.Cam_ID");
-    this->desiredWidth = pt.get<unsigned short>("Camera.DES_Width");
-    this->desiredHeight = pt.get<unsigned short>("Camera.DES_Height");
-    this->FPS = pt.get<unsigned short>("Camera.FPS");
-    this->path = pt.get<std::string>("Camera.media_Path");
+        this->showUI = pt.get<bool>("Settings.Show_UI");
 
-    //Initial slider values:
-    this->hueMin = pt.get<unsigned short>("Camera.min_hue");
-    this->satMin = pt.get<unsigned short>("Camera.min_sat");
-    this->valMin = pt.get<unsigned short>("Camera.min_val");
+        this->cameraID = pt.get<unsigned short>("Camera.Cam_ID");
 
-    this->hueMax = pt.get<unsigned short>("Camera.max_hue");
-    this->satMax = pt.get<unsigned short>("Camera.max_sat");
-    this->valMax = pt.get<unsigned short>("Camera.max_val");
+        this->desiredWidth = pt.get<unsigned short>("Camera.DES_Width");
 
-    //Database Info
-    this->databaseType = pt.get<std::string>("Database.Type");
-    this->databaseIP = pt.get<std::string>("Database.Host");
-    this->databasePort = pt.get<std::string>("Database.Port");
-    this->databaseName = pt.get<std::string>("Database.Name");
+        this->desiredHeight = pt.get<unsigned short>("Camera.DES_Height");
 
-    //Database Credentials
-    this->databaseUser = pt.get<std::string>("Credentials.Username");
-    this->databasePassword = pt.get<std::string>("Credentials.Password");
+        this->FPS = pt.get<unsigned short>("Camera.FPS");
 
-    try{
+        this->path = pt.get<std::string>("Camera.media_Path");
+
+        this->cfgFile = pt.get<std::string>("Darknet.cfg");
+
+        this->weightsFile = pt.get<std::string>("Darknet.weights");
+
+        this->classNamesFile = pt.get<std::string>("Darknet.data");
+
+        this->confThreshold = pt.get<float>("Darknet.confThreshold");
+
+        this->databaseType = pt.get<std::string>("Database.Type");
+
+        this->databaseIP = pt.get<std::string>("Database.Host");
+
+        this->databasePort = pt.get<std::string>("Database.Port");
+
+        this->databaseName = pt.get<std::string>("Database.Name");
+
+        this->databaseUser = pt.get<std::string>("Credentials.Username");
+
+        this->databasePassword = pt.get<std::string>("Credentials.Password");
+
         std::string mediaType = pt.get<std::string>("Camera.using_media");
         switch (mediaType[0]){
             case 'i':
-                Logger::getInstance().log("Media type is image.", LogLevel::INFO);
+    
                 this->media = mediaTypes::IMAGE;
                 break;
             case 'v':
-                Logger::getInstance().log("Media type is video.", LogLevel::INFO);
+    
                 this->media = mediaTypes::VIDEO;
                 break;
             case 'c':
-                Logger::getInstance().log("Media type is camera.", LogLevel::INFO);
+    
                 this->media = mediaTypes::CAMERA;
                 break;
-                
             default:
                 throw std::invalid_argument("Invalid media type in the config file!");
         }
+    } catch (const std::exception& e) {
+        throw;  // Re-throw to propagate the error
     }
-    catch(const std::exception& e){
-        Logger::getInstance().log(e.what(), LogLevel::ERRORLEVEL);
-    }
-    
 }
+
 
 // --- Getters ---
 
@@ -122,30 +126,23 @@ unsigned short ConfigReader::getDesiredHeight() const {
     return this->desiredHeight;
 }
 
-unsigned short ConfigReader::getHueMin() const {
-    return this->hueMin;
+//Darknet Info
+
+std::string ConfigReader::getCfgFile() const {
+    return this->cfgFile;
 }
 
-unsigned short ConfigReader::getSatMin() const {
-    return this->satMin;
+std::string ConfigReader::getWeightsFile() const {
+    return this->weightsFile;
 }
 
-unsigned short ConfigReader::getValMin() const {
-    return this->valMin;
+std::string ConfigReader::getClassNamesFile() const {
+    return this->classNamesFile;
 }
 
-unsigned short ConfigReader::getHueMax() const {
-    return this->hueMax;
+float ConfigReader::getConfThreshold() const {
+    return this->confThreshold;
 }
-
-unsigned short ConfigReader::getSatMax() const {
-    return this->satMax;
-}
-
-unsigned short ConfigReader::getValMax() const {
-    return this->valMax;
-}
-
 
 //Database Info
 

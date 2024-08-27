@@ -34,12 +34,11 @@ public:
     unsigned short getFPS() const;
     mediaTypes getMedia() const;
     std::string getPath() const;
-    unsigned short getHueMin() const;
-    unsigned short getSatMin() const;
-    unsigned short getValMin() const;
-    unsigned short getHueMax() const;
-    unsigned short getSatMax() const;
-    unsigned short getValMax() const;
+
+    std::string getCfgFile() const;
+    std::string getWeightsFile() const;
+    std::string getClassNamesFile() const;
+    float getConfThreshold() const;
 
     std::string getDatabaseType() const;
     std::string getDatabaseIP() const;
@@ -64,12 +63,11 @@ private:
     mediaTypes media;
     std::string path;
 
-    unsigned short hueMin;
-    unsigned short satMin;
-    unsigned short valMin;
-    unsigned short hueMax;
-    unsigned short satMax;
-    unsigned short valMax;
+    //Darknet Info:
+    std::string cfgFile;
+    std::string weightsFile;
+    std::string classNamesFile;
+    float confThreshold; //Might use double
     
     //Database Info
     std::string databaseType;

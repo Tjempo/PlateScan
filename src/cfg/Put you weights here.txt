@@ -1,0 +1,42 @@
+The weights in this project are trained on dutch licence plates. (Its just a small set of plates so don't expect too much)
+The dataset was trained with the following specs / settings:
+
+
+--- PC Specs: ---
+
+CPU: Ryzen 5 3600
+Ram: 32GB DDR4 @3600MHz
+GPU: RTX 3060 Ti
+OS: Kubuntu 24.04
+
+Time to complete: ~ 2 hours
+
+--- Darknet Settings: ---
+
+CUDA = 1
+cuDNN = 1
+
+batch = 64
+subdivisions = 16
+width=416
+height=416
+channels=3
+momentum=0.9
+decay=0.0005
+angle=0
+saturation = 1.5
+exposure = 1.5
+hue=.1
+learning_rate=0.001
+burn_in=1000
+max_batches = 12000
+policy=steps
+steps = 6000,8000
+scales=.1,.1
+
+random = 1
+
+
+
+
+If you want to train your own weights please see: https://blog.roboflow.com/training-yolov4-on-a-custom-dataset/

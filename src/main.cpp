@@ -16,13 +16,12 @@ int main(int argc, char const *argv[]) {
         //--- Setup: ---
         ConfigReader config = ConfigReader(argv[1]);
         Camera cam = Camera(config);
-        cam.calibrate();
         //Create database connection: TODO - Implement Database class
 
         //--- Loop: ---
+        Logger::getInstance().log("Starting main loop.", LogLevel::INFO);
         while(true){
-            // cam.process();
-
+            cam.detect();
         }
 
     } catch (const std::exception &e) {

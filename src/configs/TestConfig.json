@@ -1,7 +1,7 @@
 {  
     "System": {
         "Name": "PlateScanner",
-        "Version": "V1.0.0"
+        "Version": "V1.1.0"
     },
 
     "Settings":{
@@ -14,17 +14,15 @@
         "DES_Height": 720,
         "FPS": 24,
 
-        "min_hue": 0,
-        "max_hue": 179,
-
-        "min_sat": 0,
-        "max_sat": 126,
-
-        "min_val": 111,
-        "max_val": 255,
-
         "using_media": "image",
-        "media_Path": "./resources/plate.jpg"
+        "media_Path": "./resources/plate3.jpg"
+    },
+
+    "Darknet": {
+        "cfg": "./cfg/yolov4-tiny-custom.cfg",
+        "weights": "./cfg/yolov4-tiny_best.weights",
+        "data": "./cfg/obj.data",
+        "confThreshold": 0.1
     },
 
     "Database": {
