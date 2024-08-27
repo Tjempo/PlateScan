@@ -7,8 +7,8 @@
 
 // Include the Darknet header file, we'll be using the Darknet library to detect objects.
 extern "C" {
-    #include "/home/tjempo/Documents/GIT/darknet/include/darknet.h"
-    #include "/home/tjempo/Documents/GIT/darknet/include/yolo_v2_class.hpp"
+    #include "../../darknet/include/darknet.h"
+    #include "../../darknet/include/yolo_v2_class.hpp"
 }
 
 class Detection {
@@ -17,11 +17,10 @@ public:
     Detection(ConfigReader &config);
     ~Detection();
 
-    void detect(const std::string &path);
-    // void detect(const cv::Mat& img);
+    void detect(cv::Mat &img); //Not by const, because we modify the original image.
 
 private:
-    cv::VideoCapture cap; // Assuming you have a VideoCapture object
+    cv::VideoCapture cap;
     ConfigReader config;
 
     cv::dnn::Net net;

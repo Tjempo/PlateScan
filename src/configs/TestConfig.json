@@ -14,8 +14,8 @@
         "DES_Height": 720,
         "FPS": 24,
 
-        "using_media": "image",
-        "media_Path": "./resources/plate3.jpg"
+        "using_media": "camera",
+        "media_Path": "0"
     },
 
     "Darknet": {

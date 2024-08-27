@@ -22,8 +22,8 @@ Camera::~Camera() {
 void Camera::detect() {
     if (cap.isOpened()) {
         cv::Mat img = this->capture();
-        detector.detect(config.getPath());
-        // detector.detect(img); //TODO
+        // detector.detect(config.getPath());
+        detector.detect(img); //TODO
     } else {
         Logger::getInstance().log("Camera is not opened", LogLevel::ERRORLEVEL);
     }
