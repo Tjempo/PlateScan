@@ -22,7 +22,12 @@
         "cfg": "./cfg/yolov4-tiny-custom.cfg",
         "weights": "./cfg/yolov4-tiny_best.weights",
         "data": "./cfg/obj.data",
-        "confThreshold": 0.1
+        "confThreshold": 0.6
+    },
+
+    "Filesystem":{
+        "save_detected": false,
+        "savefile_path": "resources/detected_plates"
     },
 
     "Database": {

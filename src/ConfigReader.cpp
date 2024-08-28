@@ -53,6 +53,11 @@ void ConfigReader::readConfig(const std::string &configPath) {
 
         this->confThreshold = pt.get<float>("Darknet.confThreshold");
 
+        this->configPath = pt.get<std::string>("Filesystem.savefile_path");
+        img_saves_path = this->configPath; //Set the global variable
+
+        this->saveDetected = pt.get<bool>("Filesystem.save_detected");
+
         this->databaseType = pt.get<std::string>("Database.Type");
 
         this->databaseIP = pt.get<std::string>("Database.Host");
@@ -68,15 +73,12 @@ void ConfigReader::readConfig(const std::string &configPath) {
         std::string mediaType = pt.get<std::string>("Camera.using_media");
         switch (mediaType[0]){
             case 'i':
-    
                 this->media = mediaTypes::IMAGE;
                 break;
             case 'v':
-    
                 this->media = mediaTypes::VIDEO;
                 break;
             case 'c':
-    
                 this->media = mediaTypes::CAMERA;
                 break;
             default:
@@ -144,8 +146,17 @@ float ConfigReader::getConfThreshold() const {
     return this->confThreshold;
 }
 
-//Database Info
+//Filesystem Info
 
+std::string ConfigReader::getSavefilePath() const {
+    return this->savefile_path;
+}
+
+bool ConfigReader::getSaveDetected() const {
+    return this->saveDetected;
+}
+
+//Database Info
 
 std::string ConfigReader::getDatabaseType() const {
     return this->databaseType;

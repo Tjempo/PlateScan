@@ -2,6 +2,7 @@
 #define CONFIGREADER_HPP
 
 #include "Logger.hpp"
+#include "System.hpp"
 
 #include <filesystem>
 #include <string>
@@ -34,12 +35,14 @@ public:
     unsigned short getFPS() const;
     mediaTypes getMedia() const;
     std::string getPath() const;
+    std::string getSavefilePath() const;
+    bool getSaveDetected() const;
 
     std::string getCfgFile() const;
     std::string getWeightsFile() const;
     std::string getClassNamesFile() const;
     float getConfThreshold() const;
-
+   
     std::string getDatabaseType() const;
     std::string getDatabaseIP() const;
     std::string getDatabasePort() const;
@@ -49,8 +52,6 @@ public:
 
 private:
     std::string configPath;
-
-    /* Data from the config file */
     std::string name;
     std::string version;
     bool showUI;
@@ -68,6 +69,10 @@ private:
     std::string weightsFile;
     std::string classNamesFile;
     float confThreshold; //Might use double
+
+    //Filesystem:
+    std::string savefile_path;
+    bool saveDetected;
     
     //Database Info
     std::string databaseType;

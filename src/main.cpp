@@ -3,6 +3,7 @@
 #include "Camera.hpp"
 #include "Logger.hpp"
 
+
 int main(int argc, char const *argv[]) {
     //Set default log level: 
     Logger::getInstance().setLogLevel(LogLevel::DEBUG);
@@ -16,10 +17,12 @@ int main(int argc, char const *argv[]) {
         //--- Setup: ---
         ConfigReader config = ConfigReader(argv[1]);
         Camera cam = Camera(config);
+        //Create GUI object: TODO - Implement GUI class
         //Create database connection: TODO - Implement Database class
 
         //--- Loop: ---
         Logger::getInstance().log("Starting main loop.", LogLevel::INFO);
+
         while(true){
             cam.detect();
         }
@@ -28,6 +31,5 @@ int main(int argc, char const *argv[]) {
         Logger::getInstance().log(e.what(), LogLevel::ERRORLEVEL);
         return 1;
     }
-
     return 0;
 }
