@@ -33,6 +33,7 @@ cv::Mat Camera::capture(){
     cap >> this->frame;
     if (this->frame.empty()) {
         Logger::getInstance().log("End of video stream", LogLevel::INFO);
+        throw std::runtime_error("End of video stream - Stopping.");
     }
     return this->frame;
 }

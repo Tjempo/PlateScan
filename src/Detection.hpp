@@ -4,6 +4,8 @@
 #include "Logger.hpp"
 #include "ConfigReader.hpp"
 #include "FileSys.hpp"
+#include "OCR.hpp"
+
 #include <opencv2/opencv.hpp>
 
 // Include the Darknet header file, we'll be using the Darknet library to detect objects.
@@ -25,16 +27,18 @@ public:
    private:
     cv::VideoCapture cap;
     ConfigReader config;
+    OCR tessOCR;
+
 
     cv::dnn::Net net;
     std::vector<std::string> classNames;
-
 
     std::string cfgFile = "USE_CONFIG!";
     std::string weightsFile = "USE_CONFIG!";
     std::string classNamesFile = "USE_CONFIG!";
 
     float confThreshold = 0.5; //Default value is 50%
+    float nmsThreshold = 0.4; //Default value is 40%
 };
 
 

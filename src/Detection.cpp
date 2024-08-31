@@ -7,7 +7,7 @@ Detection::Detection() : config(NULL) { /*Should be deleted*/
     Logger::getInstance().log("Detection object created without config!", LogLevel::WARNING);
 }
 
-Detection::Detection(ConfigReader &aConfig) : config(aConfig), cfgFile(aConfig.getCfgFile()), weightsFile(aConfig.getWeightsFile()), classNamesFile(aConfig.getClassNamesFile()) {
+Detection::Detection(ConfigReader &aConfig) : config(aConfig), tessOCR(OCR()), cfgFile(aConfig.getCfgFile()), weightsFile(aConfig.getWeightsFile()), classNamesFile(aConfig.getClassNamesFile()) {
     // Load YOLOv4-tiny model
     try{
         net = cv::dnn::readNet(weightsFile, cfgFile);
@@ -19,6 +19,7 @@ Detection::Detection(ConfigReader &aConfig) : config(aConfig), cfgFile(aConfig.g
     }
 
     this->confThreshold = aConfig.getConfThreshold();
+    // this->nmsThreshold = aConfig.getNmsThreshold();
 
     // Load class names
     std::ifstream classNamesStream(classNamesFile);
@@ -51,17 +52,14 @@ void Detection::detect(cv::Mat& img) {
 
     // Draw bounding boxes
     this->drawBoundingBox(img, outs, classNames);
-
-    /* // Show results 
-    cv::resize(img, img, cv::Size(1900, 1000));
-    cv::imshow("Detection", img);
-    cv::waitKey(0);
-    */
 }
 
 void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::vector<std::string> classNames) {
-    //TODO use the inverse of the pixles behind the bounding box to draw the box in a different color.
-    // Process output - kinda ugly.
+    std::vector<int> classIds;
+    std::vector<float> confidences;
+    std::vector<cv::Rect> boxes;
+
+    // Iterate over all detections
     for (const auto& out : outs) {
         for (int i = 0; i < out.rows; ++i) {
             const float* data = (float*)out.data + i * out.cols;
@@ -85,33 +83,42 @@ void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::ve
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
 
-                    cv::Rect box(left, top, width, height);
-                    cv::Rect crop(left - 10, top - 10, (width + 20), (height + 20));
+                    classIds.push_back(classId);
+                    confidences.push_back(confidence);
+                    boxes.push_back(cv::Rect(left, top, width, height));
 
-                    this->cropROI(img, crop);
-                    outs.clear(); //Clear the outs vector to prevent multiple detections.
-
-                    cv::rectangle(img, box, cv::Scalar(190, 95, 0), 2);
-                    std::string label = classNames[classId] + ": " + cv::format("%.2f", confidence);
-                    cv::putText(img, label, cv::Point(left, top - 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
+                    this->cropROI(img, boxes.back());
                 }
             }
         }
     }
 
-    // Show results
-    cv::resize(img, img, cv::Size(1900, 1000));
-    cv::imshow("Detection", img);
-    cv::waitKey(0);
+    // Apply Non-Maximum Suppression to remove overlapping boxes
+    std::vector<int> indices;
+    cv::dnn::NMSBoxes(boxes, confidences, this->confThreshold, this->nmsThreshold, indices);
 
+    // Count the number of detected objects:
+    Logger::getInstance().log("Detected " + std::to_string(indices.size()) + " objects", LogLevel::INFO);
+
+    for (int idx : indices) {
+        cv::Rect box = boxes[idx];
+        cv::rectangle(img, box, cv::Scalar(190, 95, 0), 2);
+        std::string label = classNames[classIds[idx]] + ": " + cv::format("%.2f", confidences[idx]);
+        cv::putText(img, label, cv::Point(box.x, box.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
+    }
+
+    // Display the image with all detected bounding boxes
+    cv::resize(img, img, cv::Size(1900, 1000));
+    cv::imshow("Detected", img);
+    cv::waitKey(0);
 }
+
 
 void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
     if (img.empty()) {
         Logger::getInstance().log("Empty image passed!", LogLevel::ERRORLEVEL);
         return;
     }
-
     if (roi.width <= 0 || roi.height <= 0) {
         Logger::getInstance().log("Invalid ROI passed!", LogLevel::ERRORLEVEL);
         return;
@@ -119,10 +126,12 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
 
     cv::Mat cropped = img(roi);
 
+    // Detect text in the cropped image:
+    this->tessOCR.extractText(cropped);
+
     if(this->config.getSaveDetected()){
         saveImg(cropped);
     }
-
 
     cv::imshow("ROI", cropped);
     cv::waitKey(0);
