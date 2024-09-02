@@ -24,10 +24,8 @@ class Logger{
     /// @param level level The log level of the message.
     void log(const std::string &message, const LogLevel &level = LogLevel::INFO);
 
-    /**
-     * @brief Sets the log level of the logger.
-     * @param level The log level to set.
-     */
+    //@brief Sets the log level of the logger.
+    //@param level The log level to set.
     void setLogLevel(const LogLevel &level);
 
     LogLevel getLogLevel() const;

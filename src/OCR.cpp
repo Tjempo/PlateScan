@@ -38,8 +38,6 @@ cv::Mat OCR::preProcess(cv::Mat &img) {
 }
 
 
-
-
 std::string OCR::extractText(cv::Mat &img) {
     std::string extracted_text;
 
@@ -58,14 +56,19 @@ std::string OCR::extractText(cv::Mat &img) {
     // Assign the C-string to the std::string
     extracted_text = std::string(outText);
     Logger::getInstance().log("Extracted text: " + extracted_text, LogLevel::INFO);
-    filter(extracted_text);
+
+    //Find the license plate in the extracted text
+    Logger::getInstance().log(find_plate_in_string(extracted_text), LogLevel::INFO);
+    
 
     // Clean up
     delete[] outText;
     return extracted_text;
 }
 
-std::string OCR::filter(std::string &text) {
+// Functions for text filtering and license plate extraction:
+
+std::string OCR::remove_dash(std::string &text) {
     text.erase(std::remove_if(text.begin(), text.end(), [this](char c) {
         return forbidden_chars.find(c) != forbidden_chars.end();
     }), text.end());
@@ -73,3 +76,14 @@ std::string OCR::filter(std::string &text) {
     return text;
 }
 
+
+std::string OCR::find_plate_in_string(const std::string& input) {
+    // Iterate over all regex patterns and return the first match
+    for (const auto& pattern : this->regex_patterns) {
+        std::smatch match;
+        if (std::regex_search(input, match, pattern)) {
+            return match.str();
+        }
+    }
+    return "";  // Return an empty string if no match is found
+}

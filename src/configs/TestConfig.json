@@ -22,7 +22,8 @@
         "cfg": "./cfg/yolov4-tiny-custom.cfg",
         "weights": "./cfg/yolov4-tiny_best.weights",
         "data": "./cfg/obj.data",
-        "confThreshold": 0.6
+        "confThreshold": 0.6,
+        "nmsThreshold": 0.4
     },
 
     "Filesystem":{
