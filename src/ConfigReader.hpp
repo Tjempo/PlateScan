@@ -42,6 +42,7 @@ public:
     std::string getWeightsFile() const;
     std::string getClassNamesFile() const;
     float getConfThreshold() const;
+    float getNmsThreshold() const;
    
     std::string getDatabaseType() const;
     std::string getDatabaseIP() const;
@@ -68,7 +69,8 @@ private:
     std::string cfgFile;
     std::string weightsFile;
     std::string classNamesFile;
-    float confThreshold; //Might use double
+    float confThreshold;
+    float nmsThreshold;
 
     //Filesystem:
     std::string savefile_path;

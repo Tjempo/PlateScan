@@ -146,6 +146,10 @@ float ConfigReader::getConfThreshold() const {
     return this->confThreshold;
 }
 
+float ConfigReader::getNmsThreshold() const {
+    return this->nmsThreshold;
+}
+
 //Filesystem Info
 
 std::string ConfigReader::getSavefilePath() const {
