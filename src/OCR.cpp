@@ -45,10 +45,15 @@ std::string OCR::extractText(cv::Mat &img) {
     cv::Mat processedImage = this->preProcess(img);
 
     // Optionally, increase DPI by resizing
-    cv::resize(processedImage, processedImage, cv::Size(), 2, 2, cv::INTER_LINEAR);
+    double scaleFactor = TARGET_DPI / processedImage.rows;  // Increase DPI to 300 from 162
+    cv::resize(processedImage, processedImage, cv::Size(), scaleFactor, scaleFactor, cv::INTER_LINEAR);
 
-    // Set the processed image for OCR
+    // Set the DPI in Tesseract
     ocr->SetImage(processedImage.data, processedImage.cols, processedImage.rows, processedImage.channels(), processedImage.step1());
+    ocr->SetSourceResolution(300);  // Set to 300 DPI for better accuracy
+
+
+    Logger::getInstance().log("DPI: " + std::to_string(processedImage.rows), LogLevel::DEBUG);
 
     // Get the OCR result
     char* outText = ocr->GetUTF8Text();
@@ -57,14 +62,11 @@ std::string OCR::extractText(cv::Mat &img) {
     extracted_text = std::string(outText);
     Logger::getInstance().log("Extracted text: " + extracted_text, LogLevel::INFO);
 
-    //Find the license plate in the extracted text
-    Logger::getInstance().log(find_plate_in_string(extracted_text), LogLevel::INFO);
-    
-
     // Clean up
     delete[] outText;
     return extracted_text;
 }
+
 
 // Functions for text filtering and license plate extraction:
 

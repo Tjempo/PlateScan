@@ -51,7 +51,11 @@ void Detection::detect(cv::Mat& img) {
     }
 
     // Draw bounding boxes
-    this->drawBoundingBox(img, outs, classNames);
+    try{
+        this->drawBoundingBox(img, outs, classNames);
+    } catch (const cv::Exception& e) {
+        Logger::getInstance().log("Bounding box creation failed", LogLevel::ERRORLEVEL);
+    }
 }
 
 void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::vector<std::string> classNames) {
@@ -119,20 +123,28 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
         Logger::getInstance().log("Empty image passed!", LogLevel::ERRORLEVEL);
         return;
     }
-    if (roi.width <= 0 || roi.height <= 0) {
-        Logger::getInstance().log("Invalid ROI passed!", LogLevel::ERRORLEVEL);
-        return;
+
+    // Ensure ROI is within image bounds
+    int x = std::max(0, roi.x);
+    int y = std::max(0, roi.y);
+    int width = std::min(roi.width, img.cols - x);
+    int height = std::min(roi.height, img.rows - y);
+
+    // Only process if the width and height are valid
+    if (width > 0 && height > 0) {
+        cv::Rect boundedROI(x, y, width, height);
+        cv::Mat cropped = img(boundedROI);
+
+        // Detect text in the cropped image
+        this->tessOCR.extractText(cropped);
+
+        if(this->config.getSaveDetected()){
+            saveImg(cropped);
+        }
+
+        cv::imshow("ROI", cropped);
+        cv::waitKey(0);
+    } else {
+        Logger::getInstance().log("ROI is out of bounds!", LogLevel::ERRORLEVEL);
     }
-
-    cv::Mat cropped = img(roi);
-
-    // Detect text in the cropped image:
-    this->tessOCR.extractText(cropped);
-
-    if(this->config.getSaveDetected()){
-        saveImg(cropped);
-    }
-
-    cv::imshow("ROI", cropped);
-    cv::waitKey(0);
 }

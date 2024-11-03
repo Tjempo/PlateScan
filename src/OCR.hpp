@@ -11,8 +11,9 @@
 #include <unordered_set>
 #include <regex>
 
-class OCR
-{
+#define TARGET_DPI 300
+
+class OCR {
 public:
     OCR();
     // OCR(/* args */);
