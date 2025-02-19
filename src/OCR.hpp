@@ -32,6 +32,11 @@ public:
     tesseract::TessBaseAPI *ocr;
     const std::unordered_set<char> forbidden_chars = {'-'};
 
+
+    /// @brief This function deskews the image.
+    /// @param img the image to deskew.
+    cv::Mat deskew(cv::Mat &img);
+
     /// @brief This function filters out forbidden characters from the input text. (Prepares it for database queries.)
     /// @param text the input string to filter.
     /// @return The input string with forbidden characters removed.

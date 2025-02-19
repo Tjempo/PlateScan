@@ -110,11 +110,6 @@ void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::ve
         std::string label = classNames[classIds[idx]] + ": " + cv::format("%.2f", confidences[idx]);
         cv::putText(img, label, cv::Point(box.x, box.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
     }
-
-    // Display the image with all detected bounding boxes
-    cv::resize(img, img, cv::Size(1900, 1000));
-    cv::imshow("Detected", img);
-    cv::waitKey(0);
 }
 
 

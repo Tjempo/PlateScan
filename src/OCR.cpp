@@ -29,14 +29,56 @@ cv::Mat OCR::preProcess(cv::Mat &img) {
     // Apply simple thresholding
     cv::threshold(processedImage, processedImage, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
 
+    // Deskew the image
+    // processedImage = this->deskew(processedImage);
+
     // Optionally, dilate the image to make characters more prominent
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
     cv::dilate(processedImage, processedImage, kernel);
-    
+
     cv::imshow("Preprocessed", processedImage);
     return processedImage;
 }
 
+/*
+cv::Mat OCR::deskew(cv::Mat &img) {
+    // Find edges using Canny
+    cv::Mat edges;
+    cv::Canny(img, edges, 50, 150);
+
+    // Find contours
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(edges, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+    if (!contours.empty()) {
+        // Get the minimum area rectangle around the largest contour
+        cv::RotatedRect minRect = cv::minAreaRect(contours[0]);
+        float angle = minRect.angle;
+
+        // Adjust angle (minAreaRect returns angles in [-90, 0])
+        if (angle < -45) {
+            angle += 90;
+        }
+
+        // Rotate the image to deskew
+        cv::Mat rotationMatrix = cv::getRotationMatrix2D(minRect.center, angle, 1.0);
+        cv::Mat rotated;
+        cv::warpAffine(img, rotated, rotationMatrix, img.size(), cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar(255, 255, 255));
+
+        Logger::getInstance().log("Deskewed with angle: " + std::to_string(angle), LogLevel::DEBUG);
+        return rotated;
+    }
+
+    Logger::getInstance().log("No contours found for deskewing", LogLevel::WARNING);
+    return img; // Return the original image if no contours are found
+}
+
+*/
+
+
+// -----------------------------
+//  Text extraction functions
+// -----------------------------
 
 std::string OCR::extractText(cv::Mat &img) {
     std::string extracted_text;
@@ -60,8 +102,12 @@ std::string OCR::extractText(cv::Mat &img) {
 
     // Assign the C-string to the std::string
     extracted_text = std::string(outText);
-    Logger::getInstance().log("Extracted text: " + extracted_text, LogLevel::INFO);
 
+    // Match debug output with regex
+    std::string debug_text = find_plate_in_string(extracted_text);
+    Logger::getInstance().log("Extracted text:" + extracted_text, LogLevel::DEBUG);
+    Logger::getInstance().log("Matched on regex: " + debug_text, LogLevel::DEBUG);
+    //^^ Does not work yet!
     // Clean up
     delete[] outText;
     return extracted_text;

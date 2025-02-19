@@ -1,0 +1,45 @@
+{  
+    "System": {
+        "Name": "PlateScanner",
+        "Version": "V1.1.0"
+    },
+
+    "Settings":{
+        "Show_UI": true
+    },
+
+    "Camera": {
+        "Cam_ID": 0,
+        "DES_Width": 1280,
+        "DES_Height": 720,
+        "FPS": 24,
+
+        "using_media": "image",
+        "media_Path": "./resources/plate4.jpg"
+    },
+
+    "Filesystem":{
+        "save_detected": false,
+        "savefile_path": "resources/detected_plates"
+    },
+
+    "Darknet": {
+        "cfg": "./cfg/yolov4-tiny-custom.cfg",
+        "weights": "./cfg/yolov4-tiny_best.weights",
+        "data": "./cfg/obj.data",
+        "confThreshold": 0.95,
+        "nmsThreshold": 0.4
+    },
+
+    "Database": {
+        "Type": "PostgreSQL",
+        "Host": "192.168.1.1",
+        "Port": 5432,
+        "Name": "PlateScanner"
+    },
+
+    "Credentials": {
+        "Username": "admin",
+        "Password": "admin"
+    }
+}
