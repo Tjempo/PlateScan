@@ -1,0 +1,11 @@
+BasedOnStyle: Google
+IndentWidth: 4
+ColumnLimit: 0
+BraceWrapping:
+  AfterFunction: false
+  AfterControlStatement: false
+  AfterNamespace: false
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
+PointerAlignment: Right

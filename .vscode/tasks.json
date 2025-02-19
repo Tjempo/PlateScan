@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "${workspaceFolder}/*.cpp",  // Adjust this if your source files are in subdirectories
+                "-o",
+                "${workspaceFolder}/a.out",
+                "-I",
+                "/home/tjempo/opencv_build/opencv/include",
+                "-I",
+                "/home/tjempo/opencv_build/opencv_contrib/modules/aruco/include",
+                // Add other include paths as necessary
+                "-L",
+                "/home/tjempo/opencv_build/opencv/lib",  // Adjust library path if necessary
+                "-lopencv_core",
+                "-lopencv_highgui",
+                "-lopencv_imgcodecs",
+                "-lopencv_imgproc",
+                "-lopencv_videoio",
+                "-lopencv_video"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}
