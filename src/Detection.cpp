@@ -55,6 +55,7 @@ void Detection::detect(cv::Mat& img) {
         this->drawBoundingBox(img, outs, classNames);
     } catch (const cv::Exception& e) {
         Logger::getInstance().log("Bounding box creation failed", LogLevel::ERRORLEVEL);
+        Logger::getInstance().log(e.what(), LogLevel::ERRORLEVEL);
     }
 }
 
@@ -80,10 +81,10 @@ void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::ve
                 }
                 if (classId >= 0) {
                     // Convert to bounding box
-                    int centerX = (int)(data[0] * img.cols);
-                    int centerY = (int)(data[1] * img.rows);
-                    int width = (int)(data[2] * img.cols);
-                    int height = (int)(data[3] * img.rows);
+                    int centerX = (int)(data[0] * abs(img.cols));
+                    int centerY = (int)(data[1] * abs(img.rows));
+                    int width = (int)(data[2] * abs(img.cols));
+                    int height = (int)(data[3] * abs(img.rows));
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
 
@@ -137,8 +138,8 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
             saveImg(cropped);
         }
 
-        cv::imshow("ROI", cropped);
-        cv::waitKey(0);
+        // cv::imshow("ROI", cropped);
+        // cv::waitKey(0);
     } else {
         Logger::getInstance().log("ROI is out of bounds!", LogLevel::ERRORLEVEL);
     }
