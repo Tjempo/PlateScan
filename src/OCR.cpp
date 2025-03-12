@@ -107,7 +107,7 @@ std::string OCR::extractText(cv::Mat &img) {
     std::string debug_text = find_plate_in_string(extracted_text);
     Logger::getInstance().log("Extracted text:" + extracted_text, LogLevel::DEBUG);
     Logger::getInstance().log("Matched on regex: " + debug_text, LogLevel::DEBUG);
-    //^^ Does not work yet!
+
     // Clean up
     delete[] outText;
     return extracted_text;

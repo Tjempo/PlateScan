@@ -1,4 +1,5 @@
 #include "Detection.hpp"
+#include "Logger.hpp"
 
 using namespace cv;
 
@@ -10,6 +11,13 @@ Detection::Detection() : config(NULL) { /*Should be deleted*/
 Detection::Detection(ConfigReader &aConfig) : config(aConfig), tessOCR(OCR()), cfgFile(aConfig.getCfgFile()), weightsFile(aConfig.getWeightsFile()), classNamesFile(aConfig.getClassNamesFile()) {
     // Load YOLOv4-tiny model
     try{
+        //Print paths:
+        Logger::getInstance().log("cfgFile: " + cfgFile, LogLevel::DEBUG);
+        Logger::getInstance().log("weightsFile: " + weightsFile, LogLevel::DEBUG);
+        Logger::getInstance().log("classNamesFile: " + classNamesFile, LogLevel::DEBUG);
+
+
+
         net = cv::dnn::readNet(weightsFile, cfgFile);
         net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
         net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
@@ -85,14 +93,28 @@ void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::ve
                     int centerY = (int)(data[1] * abs(img.rows));
                     int width = (int)(data[2] * abs(img.cols));
                     int height = (int)(data[3] * abs(img.rows));
-                    int left = centerX - width / 2;
-                    int top = centerY - height / 2;
+
+                    // Clamp to be within the image boundaries
+                    int left = std::max(centerX - width / 2, 0);
+                    int top = std::max(centerY - height / 2, 0);
+                    int right = std::min(centerX + width / 2, img.cols);
+                    int bottom = std::min(centerY + height / 2, img.rows);
+
+                    // Debugging the corrected values
+                    std::cout << "Adjusted Bounding Box:" << std::endl;
+                    std::cout << "left: " << left << ", top: " << top << ", right: " << right << ", bottom: " << bottom << std::endl;
+
 
                     classIds.push_back(classId);
                     confidences.push_back(confidence);
                     boxes.push_back(cv::Rect(left, top, width, height));
 
-                    this->cropROI(img, boxes.back());
+                    // Ensure bounding box dimensions are valid before cropping
+                    if (width > 0 && height > 0) {
+                        this->cropROI(img, boxes.back());
+                    } else {
+                        Logger::getInstance().log("Invalid bounding box dimensions!", LogLevel::ERRORLEVEL);
+                    }
                 }
             }
         }
@@ -121,8 +143,8 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
     }
 
     // Ensure ROI is within image bounds
-    int x = std::max(0, roi.x);
-    int y = std::max(0, roi.y);
+    int x = std::max(roi.x, 0);
+    int y = std::max(roi.y, 0);
     int width = std::min(roi.width, img.cols - x);
     int height = std::min(roi.height, img.rows - y);
 
@@ -138,8 +160,8 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
             saveImg(cropped);
         }
 
-        // cv::imshow("ROI", cropped);
-        // cv::waitKey(0);
+        cv::imshow("ROI", cropped);
+        cv::waitKey(0);
     } else {
         Logger::getInstance().log("ROI is out of bounds!", LogLevel::ERRORLEVEL);
     }

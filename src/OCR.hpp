@@ -62,7 +62,7 @@ public:
         std::regex(R"(([a-zA-Z]{2})-([0-9]{3})-([a-zA-Z]))"),    // [9]  => XX-999-X #from 2015
         std::regex(R"(([a-zA-Z])-([0-9]{3})-([a-zA-Z]{2}))"),    // [10] => X-999-XX #from 2019
         std::regex(R"(([a-zA-Z]{3})-([0-9]{2})-([a-zA-Z]))"),    // [11] => XXX-99-X #from 2024
-        std::regex(R"(([0-9])-([a-zA-Z]{2})-([0-9]{3}))"),       // [12] => 9-XX-999 #Does not exist yet
+        std::regex(R"(([0-9])-([a-zA-Z]{2})-([0-9]{3}))"),       // [12] => 9-XX-999 #(Currently only company vehicles)
         std::regex(R"(([0-9]{3})-([a-zA-Z]{2})-([0-9]))"),       // [13] => 999-XX-9 #Does not exist yet
         std::regex(R"(([a-zA-Z])-(\d{2})-([a-zA-Z]{3}))")        // [14] => X-99-XXX #Does not exist yet
     };
