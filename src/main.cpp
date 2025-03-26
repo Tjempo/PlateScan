@@ -9,7 +9,7 @@ int main(int argc, char const *argv[]) {
     Logger::getInstance().setLogLevel(LogLevel::DEBUG);
 
     if (argc != 2) {
-        Logger::getInstance().log("Usage: " + std::string(argv[0]) + " <config file.json>", LogLevel::ERRORLEVEL);
+        Logger::getInstance().log("Usage: " + std::string(argv[0]) + " <config file.json>", LogLevel::ERRORLEVEL); //Set default log level.
         return 1;
     }
 

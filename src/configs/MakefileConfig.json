@@ -1,7 +1,7 @@
 {  
     "System": {
         "Name": "PlateScanner",
-        "Version": "V1.1.0"
+        "Version": "V1.2.0"
     },
 
     "Settings":{
@@ -15,7 +15,7 @@
         "FPS": 24,
 
         "using_media": "image",
-        "media_Path": "./src/resources/plate7.jpg"
+        "media_Path": "./src/resources/plate6.jpg"
     },
 
     "Filesystem":{
