@@ -39,3 +39,4 @@ plateScan
 *.jpg
 *.png
 *.mp4
+/src/output

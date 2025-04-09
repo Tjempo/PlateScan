@@ -22,8 +22,7 @@ Camera::~Camera() {
 void Camera::detect() {
     if (cap.isOpened()) {
         cv::Mat img = this->capture();
-        // detector.detect(config.getPath());
-        detector.detect(img); //TODO
+        detector.detect(img);
     } else {
         Logger::getInstance().log("Camera is not opened", LogLevel::ERRORLEVEL);
     }
@@ -32,7 +31,7 @@ void Camera::detect() {
 cv::Mat Camera::capture(){
     cap >> this->frame;
     if (this->frame.empty()) {
-        Logger::getInstance().log("End of video stream", LogLevel::INFO);
+        Logger::getInstance().log("End of video stream", LogLevel::WARNING);
         throw std::runtime_error("End of video stream - Stopping.");
     }
     return this->frame;
