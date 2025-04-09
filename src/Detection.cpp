@@ -97,13 +97,6 @@ void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::ve
                     int right = std::clamp(centerX + width / 2, 0, img.rows - 1);
                     int bottom = std::clamp(centerY + height / 2, 0, img.cols - 1);
 
-
-                    // Debugging the corrected values
-                    std::cout << "Adjusted Bounding Box:" << std::endl;
-                    std::cout << "left: " << left << ", top: " << top << ", right: " << right << ", bottom: " << bottom << std::endl;
-
-                    std::cout << "Dimention of the image: " << img.cols << "x" << img.rows << std::endl;
-
                     classIds.push_back(classId);
                     confidences.push_back(confidence);
                     boxes.push_back(cv::Rect(left, top, width, height));
@@ -142,8 +135,9 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
     }
 
     // Ensure ROI is within image bounds
-    int x = std::max(roi.x, 0);
-    int y = std::max(roi.y, 0);
+    int x = std::max(0, roi.x);
+    int y = std::max(0, roi.y);
+
     int width = std::min(roi.width, img.cols - x);
     int height = std::min(roi.height, img.rows - y);
 
