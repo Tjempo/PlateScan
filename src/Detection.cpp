@@ -16,8 +16,6 @@ Detection::Detection(ConfigReader &aConfig) : config(aConfig), tessOCR(OCR()), c
         Logger::getInstance().log("weightsFile: " + weightsFile, LogLevel::DEBUG);
         Logger::getInstance().log("classNamesFile: " + classNamesFile, LogLevel::DEBUG);
 
-
-
         net = cv::dnn::readNet(weightsFile, cfgFile);
         net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
         net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
@@ -94,16 +92,17 @@ void Detection::drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::ve
                     int width = (int)(data[2] * abs(img.cols));
                     int height = (int)(data[3] * abs(img.rows));
 
-                    // Clamp to be within the image boundaries
-                    int left = std::max(centerX - width / 2, 0);
-                    int top = std::max(centerY - height / 2, 0);
-                    int right = std::min(centerX + width / 2, img.cols);
-                    int bottom = std::min(centerY + height / 2, img.rows);
+                    int left = std::clamp(centerX - width / 2, 0, img.cols -1);
+                    int top = std::clamp(centerY - height / 2, 0, img.rows - 1);
+                    int right = std::clamp(centerX + width / 2, 0, img.rows - 1);
+                    int bottom = std::clamp(centerY + height / 2, 0, img.cols - 1);
+
 
                     // Debugging the corrected values
                     std::cout << "Adjusted Bounding Box:" << std::endl;
                     std::cout << "left: " << left << ", top: " << top << ", right: " << right << ", bottom: " << bottom << std::endl;
 
+                    std::cout << "Dimention of the image: " << img.cols << "x" << img.rows << std::endl;
 
                     classIds.push_back(classId);
                     confidences.push_back(confidence);
