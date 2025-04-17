@@ -23,6 +23,7 @@ public:
     void detect(cv::Mat &img); //Not by const, because we modify the original image.
     void drawBoundingBox(cv::Mat &img, std::vector<cv::Mat> outs, std::vector<std::string> classNames);
     void cropROI(cv::Mat &img, cv::Rect &roi);
+    void warpImage(cv::Mat &img, cv::Rect &roi);
 
    private:
     cv::VideoCapture cap;
@@ -37,8 +38,8 @@ public:
     std::string weightsFile = "USE_CONFIG!";
     std::string classNamesFile = "USE_CONFIG!";
 
-    float confThreshold = 0.5; //Default value is 50%
-    float nmsThreshold = 0.4; //Default value is 40%
+    float confThreshold = 0.5f; //Default value is 50%
+    float nmsThreshold = 0.4f; //Default value is 40%
 };
 
 

@@ -146,6 +146,8 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
         cv::Rect boundedROI(x, y, width, height);
         cv::Mat cropped = img(boundedROI);
 
+        this->warpImage(cropped, boundedROI);
+        cv::imshow("Cropped Image", cropped); // Keep only this display
         // Detect text in the cropped image
         this->tessOCR.extractText(cropped);
 
@@ -153,9 +155,42 @@ void Detection::cropROI(cv::Mat &img, cv::Rect& roi) {
             saveImg(cropped);
         }
 
-        cv::imshow("ROI", cropped);
-        cv::waitKey(0);
+        cv::waitKey(0); // Wait for a key press
     } else {
         Logger::getInstance().log("ROI is out of bounds!", LogLevel::ERRORLEVEL);
     }
+}
+
+
+
+void Detection::warpImage(cv::Mat& img, cv::Rect& roi) {
+    if (img.empty()) {
+        Logger::getInstance().log("Empty image passed!", LogLevel::ERRORLEVEL);
+        return;
+    }
+
+    // Warp the image to a rectangle so the text is straight.
+    std::vector<cv::Point2f> roiCorners;
+    roiCorners.push_back(cv::Point2f(0, 0));                             // Top-left
+    roiCorners.push_back(cv::Point2f(img.cols - 1, 0));                 // Top-right
+    roiCorners.push_back(cv::Point2f(0, img.rows - 1));                 // Bottom-left
+    roiCorners.push_back(cv::Point2f(img.cols - 1, img.rows - 1));     // Bottom-right
+
+    // Optional: simulate perspective skew correction
+    float perspectiveAdjustment = 10.0f;
+    roiCorners[0].y += perspectiveAdjustment;
+    roiCorners[1].y -= perspectiveAdjustment;
+    roiCorners[2].y -= perspectiveAdjustment;
+    roiCorners[3].y += perspectiveAdjustment;
+
+    // Destination points are a straight rectangle
+    std::vector<cv::Point2f> destinationCorners = {
+        {0, 0},
+        {(float)img.cols, 0},
+        {0, (float)img.rows},
+        {(float)img.cols, (float)img.rows}
+    };
+
+    cv::Mat matrix = cv::getPerspectiveTransform(roiCorners, destinationCorners);
+    cv::warpPerspective(img, img, matrix, img.size());  // ← overwrite input img
 }

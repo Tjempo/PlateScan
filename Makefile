@@ -1,6 +1,6 @@
 # Compiler and libraries
 CXX = g++
-CXXFLAGS = -Wall -Wextra -Wconversion -pedantic -std=c++17 $(shell pkg-config --cflags opencv4)
+CXXFLAGS = -Wall -Wextra -Wconversion -pedantic -std=c++17 $(shell pkg-config --cflags opencv4) -isystem /usr/include/opencv4
 CLIBS = $(shell pkg-config --libs opencv4) -L/home/tjempo/Documents/GIT/darknet -ldarknet -lcrypto -ltesseract
 SRC_FOLDER = src
 OUTPUT_FOLDER = $(SRC_FOLDER)/output
